@@ -1,146 +1,473 @@
 <!DOCTYPE HTML>
-<!--
-	Big Picture by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
-		<title>violentspoiler's home</title>
+		<title>郭韶琪的个人简历</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
 
 		<!-- Header -->
-			<header id="header">
-				<h1>violentspoiler</h1>
-				<nav>
+			<section id="header">
+				<header>
+					<span class="image avatar">
+						<img src="images/avatar.jpg" alt="" />
+						<!-- <div class="btnbg">
+						<button type="button" onclick="toggleAnimation(this)">Stop</button>
+						</div> -->
+					</span>
+					<h1 id="logo"><a href="#">郭韶琪</a></h1>
+					<p>愿你阅尽千帆<br />
+					归来仍是少年</p>
+				</header>
+				<nav id="nav">
 					<ul>
-						<li><a href="#intro">首页</a></li>
-						<li><a href="#one">关于主页</a></li>
-						<li><a href="#two">关于我</a></li>
-						<li><a href="#work">我的工作</a></li>
-						<li><a href="#contact">联系方式</a></li>
+						<li><a href="#one" class="active">自我介绍</a></li>
+						<li><a href="#two">技能栏</a></li>
+						<li><a href="#three">项目经历</a></li>
+						<li><a href="#four">联系方式</a></li>
 					</ul>
 				</nav>
-			</header>
-
-		<!-- Intro -->
-			<section id="intro" class="main style1 dark fullscreen">
-				<div class="content">
-					<header>
-						<h2>Hey.</h2>
-					</header>
-					<p  style="color: rgb(3, 3, 3);">
-						欢迎来到 <strong>violentspoiler's home</strong> <br />
-					violentspoiler 意为 “剧透狂魔” 来自大学时同学的调侃 <br />
-					当然我并不是喜欢剧透，只是喜欢别人因反抗剧透抓狂的行为。</p>
-					<footer>
-						<a href="#one" class="button style2 down">More</a>
-					</footer>
-				</div>
+				<footer>
+					<ul class="icons">
+					</ul>
+				</footer>
 			</section>
 
-		<!-- One -->
-			<section id="one" class="main style2 right dark fullscreen">
-				<div class="content box style2">
-					<header>
-						<h2>为什么做主页</h2>
-					</header>
-					<p>如果某一天我真的有做个人主页的想法，一定是想分享一些自己的东西。但现在只是刚学来做的练习<br/>
-						之前的主页充斥着我练习做的前端页面，显得反而很乱，所以这次做了些简化<br/>
-						感谢来访~</p>
-				</div>
-				<a href="#two" class="button style2 down anchored">Next</a>
-			</section>
+		<!-- Wrapper -->
+			<div id="wrapper">
 
-		<!-- Two -->
-			<section id="two" class="main style2 left dark fullscreen">
-				<div class="content box style2">
-					<header>
-						<h2>关于我</h2>
-					</header>
-					<p>喜欢读书，喜欢编程，喜欢思考<br/>
-					在熟人面前滔滔不绝，对陌生人过于礼貌<br/>
-					喜欢创造，渴望成功</p>
-				</div>
-				<a href="#work" class="button style2 down anchored">Next</a>
-			</section>
+				<!-- Main -->
+					<div id="main">
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/banner.jpg" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>自我介绍</h2>
+										<p>两年工作经验<br />
+										相信技术改变世界</p>
+									</header>
+									<p>
+										本人为人诚恳，思想积极向上，性格相对内向，热衷于技术成长，有较强的团队精神。<br />
+										在我前期的职业生涯中，主要注重于技能广度的成长，这让我拥有了更加广阔的视野，能从不同的角度审视一个项目的具体实现方式。<br/>
+										目前热衷于前端视觉展示，希望能做出更棒的视觉效果！
+									</p>
+								</div>
+							</section>
 
-		<!-- Work -->
-			<section id="work" class="main style3 primary">
-				<div class="content">
-					<header>
-						<h2>我 的 工 作</h2>
-						<p>之前的公司经营模式出现了问题，年底不得不辞职，正好赶上新冠，在家待了三个月。<br/>
-							主要用 SSM + springboot做过Java的后端接口，element-UI的前端界面和几个微信小程序</p>
-					</header>
+						<!-- Two -->
+							<section id="two">
+								<div class="container">
+									<h3>技能栏</h3>
+									<p>曾经以为技多不压身，事实证明，百招全，不如一招鲜。</p>
+									<ul class="feature-icons">
+										<li class="icon solid fa-code">Java、Javascript、CSS、HTML、python等</li>
+										<li class="icon solid fa-cubes">SSM、VUE等</li>
+										<li class="icon solid fa-book">office办公软件</li>
+										<li class="icon solid fa-coffee">PS、PR</li>
+										<li class="icon solid fa-bolt">SQLserver、Mysql</li>
+										<!-- <li class="icon solid fa-users"></li> -->
+									</ul>
+								</div>
+							</section>
 
-					<!-- Gallery  -->
-						<div class="gallery">
-							<article class="from-left">
-								<a href="images/fulls/01.jpg" class="image fit"><img src="images/thumbs/01.jpg" title="The Anonymous Red" alt="" /></a>
-							</article>
-							<article class="from-right">
-								<a href="images/fulls/02.jpg" class="image fit"><img src="images/thumbs/02.jpg" title="Airchitecture II" alt="" /></a>
-							</article>
-							<article class="from-left">
-								<a href="images/fulls/03.jpg" class="image fit"><img src="images/thumbs/03.jpg" title="Air Lounge" alt="" /></a>
-							</article>
-							<article class="from-right">
-								<a href="images/fulls/04.jpg" class="image fit"><img src="images/thumbs/04.jpg" title="Carry on" alt="" /></a>
-							</article>
-							<article class="from-left">
-								<a href="images/fulls/05.jpg" class="image fit"><img src="images/thumbs/05.jpg" title="The sparkling shell" alt="" /></a>
-							</article>
-							<article class="from-right">
-								<a href="images/fulls/06.jpg" class="image fit"><img src="images/thumbs/06.jpg" title="Bent IX" alt="" /></a>
-							</article>
-						</div>
+							<!-- sakura shader -->
+							<script id="sakura_point_vsh" type="x-shader/x_vertex">
+							uniform mat4 uProjection;
+							uniform mat4 uModelview;
+							uniform vec3 uResolution;
+							uniform vec3 uOffset;
+							uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+							uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
 
-				</div>
-			</section>
+							attribute vec3 aPosition;
+							attribute vec3 aEuler;
+							attribute vec2 aMisc; //x:size, y:fade
 
-		<!-- Contact -->
-			<section id="contact" class="main style3 secondary">
-				<div class="content">
-					<header>
-						<h2>再一次感谢来访~</h2>
-						<p>联系电话： 13114399272    邮箱： violentspoiler@gmail.com</p>
-					</header>
-					<div class="box">
-						<form method="post" action="#">
-							<div class="fields">
-								<div class="field half"><input type="text" name="name" placeholder="Name" /></div>
-								<div class="field half"><input type="email" name="email" placeholder="Email" /></div>
-								<div class="field"><textarea name="message" placeholder="Message" rows="6"></textarea></div>
-							</div>
-							<ul class="actions special">
-								<li><input type="submit" value="Send Message" /></li>
-							</ul>
-						</form>
+							varying vec3 pposition;
+							varying float psize;
+							varying float palpha;
+							varying float pdist;
+
+							//varying mat3 rotMat;
+							varying vec3 normX;
+							varying vec3 normY;
+							varying vec3 normZ;
+							varying vec3 normal;
+
+							varying float diffuse;
+							varying float specular;
+							varying float rstop;
+							varying float distancefade;
+
+							void main(void) {
+								// Projection is based on vertical angle
+								vec4 pos = uModelview * vec4(aPosition + uOffset, 1.0);
+								gl_Position = uProjection * pos;
+								gl_PointSize = aMisc.x * uProjection[1][1] / -pos.z * uResolution.y * 0.5;
+								
+								pposition = pos.xyz;
+								psize = aMisc.x;
+								pdist = length(pos.xyz);
+								palpha = smoothstep(0.0, 1.0, (pdist - 0.1) / uFade.z);
+								
+								vec3 elrsn = sin(aEuler);
+								vec3 elrcs = cos(aEuler);
+								mat3 rotx = mat3(
+									1.0, 0.0, 0.0,
+									0.0, elrcs.x, elrsn.x,
+									0.0, -elrsn.x, elrcs.x
+								);
+								mat3 roty = mat3(
+									elrcs.y, 0.0, -elrsn.y,
+									0.0, 1.0, 0.0,
+									elrsn.y, 0.0, elrcs.y
+								);
+								mat3 rotz = mat3(
+									elrcs.z, elrsn.z, 0.0, 
+									-elrsn.z, elrcs.z, 0.0,
+									0.0, 0.0, 1.0
+								);
+								mat3 rotmat = rotx * roty * rotz;
+								normal = rotmat[2];
+								
+								mat3 trrotm = mat3(
+									rotmat[0][0], rotmat[1][0], rotmat[2][0],
+									rotmat[0][1], rotmat[1][1], rotmat[2][1],
+									rotmat[0][2], rotmat[1][2], rotmat[2][2]
+								);
+								normX = trrotm[0];
+								normY = trrotm[1];
+								normZ = trrotm[2];
+								
+								const vec3 lit = vec3(0.6917144638660746, 0.6917144638660746, -0.20751433915982237);
+								
+								float tmpdfs = dot(lit, normal);
+								if(tmpdfs < 0.0) {
+									normal = -normal;
+									tmpdfs = dot(lit, normal);
+								}
+								diffuse = 0.4 + tmpdfs;
+								
+								vec3 eyev = normalize(-pos.xyz);
+								if(dot(eyev, normal) > 0.0) {
+									vec3 hv = normalize(eyev + lit);
+									specular = pow(max(dot(hv, normal), 0.0), 20.0);
+								}
+								else {
+									specular = 0.0;
+								}
+								
+								rstop = clamp((abs(pdist - uDOF.x) - uDOF.y) / uDOF.z, 0.0, 1.0);
+								rstop = pow(rstop, 0.5);
+								//-0.69315 = ln(0.5)
+								distancefade = min(1.0, exp((uFade.x - pdist) * 0.69315 / uFade.y));
+							}
+							</script>
+							<script id="sakura_point_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+
+							uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+							uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+							const vec3 fadeCol = vec3(0.08, 0.03, 0.06);
+
+							varying vec3 pposition;
+							varying float psize;
+							varying float palpha;
+							varying float pdist;
+
+							//varying mat3 rotMat;
+							varying vec3 normX;
+							varying vec3 normY;
+							varying vec3 normZ;
+							varying vec3 normal;
+
+							varying float diffuse;
+							varying float specular;
+							varying float rstop;
+							varying float distancefade;
+
+							float ellipse(vec2 p, vec2 o, vec2 r) {
+								vec2 lp = (p - o) / r;
+								return length(lp) - 1.0;
+							}
+
+							void main(void) {
+								vec3 p = vec3(gl_PointCoord - vec2(0.5, 0.5), 0.0) * 2.0;
+								vec3 d = vec3(0.0, 0.0, -1.0);
+								float nd = normZ.z; //dot(-normZ, d);
+								if(abs(nd) < 0.0001) discard;
+								
+								float np = dot(normZ, p);
+								vec3 tp = p + d * np / nd;
+								vec2 coord = vec2(dot(normX, tp), dot(normY, tp));
+								
+								//angle = 15 degree
+								const float flwrsn = 0.258819045102521;
+								const float flwrcs = 0.965925826289068;
+								mat2 flwrm = mat2(flwrcs, -flwrsn, flwrsn, flwrcs);
+								vec2 flwrp = vec2(abs(coord.x), coord.y) * flwrm;
+								
+								float r;
+								if(flwrp.x < 0.0) {
+									r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.36, 0.96) * 0.5);
+								}
+								else {
+									r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.58, 0.96) * 0.5);
+								}
+								
+								if(r > rstop) discard;
+								
+								vec3 col = mix(vec3(1.0, 0.8, 0.75), vec3(1.0, 0.9, 0.87), r);
+								float grady = mix(0.0, 1.0, pow(coord.y * 0.5 + 0.5, 0.35));
+								col *= vec3(1.0, grady, grady);
+								col *= mix(0.8, 1.0, pow(abs(coord.x), 0.3));
+								col = col * diffuse + specular;
+								
+								col = mix(fadeCol, col, distancefade);
+								
+								float alpha = (rstop > 0.001)? (0.5 - r / (rstop * 2.0)) : 1.0;
+								alpha = smoothstep(0.0, 1.0, alpha) * palpha;
+								
+								gl_FragColor = vec4(col * 0.5, alpha);
+							}
+							</script>
+							<!-- effects -->
+							<script id="fx_common_vsh" type="x-shader/x_vertex">
+							uniform vec3 uResolution;
+							attribute vec2 aPosition;
+
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+
+							void main(void) {
+								gl_Position = vec4(aPosition, 0.0, 1.0);
+								texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+								screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+							}
+							</script>
+							<script id="bg_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+
+							uniform vec2 uTimes;
+
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+
+							void main(void) {
+								vec3 col;
+								float c;
+								vec2 tmpv = texCoord * vec2(0.8, 1.0) - vec2(0.95, 1.0);
+								c = exp(-pow(length(tmpv) * 1.8, 2.0));
+								col = mix(vec3(0.02, 0.0, 0.03), vec3(0.96, 0.98, 1.0) * 1.5, c);
+								gl_FragColor = vec4(col * 0.5, 1.0);
+							}
+							</script>
+							<script id="fx_brightbuf_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+							uniform sampler2D uSrc;
+							uniform vec2 uDelta;
+
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+
+							void main(void) {
+								vec4 col = texture2D(uSrc, texCoord);
+								gl_FragColor = vec4(col.rgb * 2.0 - vec3(0.5), 1.0);
+							}
+							</script>
+							<script id="fx_dirblur_r4_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+							uniform sampler2D uSrc;
+							uniform vec2 uDelta;
+							uniform vec4 uBlurDir; //dir(x, y), stride(z, w)
+
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+
+							void main(void) {
+								vec4 col = texture2D(uSrc, texCoord);
+								col = col + texture2D(uSrc, texCoord + uBlurDir.xy * uDelta);
+								col = col + texture2D(uSrc, texCoord - uBlurDir.xy * uDelta);
+								col = col + texture2D(uSrc, texCoord + (uBlurDir.xy + uBlurDir.zw) * uDelta);
+								col = col + texture2D(uSrc, texCoord - (uBlurDir.xy + uBlurDir.zw) * uDelta);
+								gl_FragColor = col / 5.0;
+							}
+							</script>
+							<!-- effect fragment shader template -->
+							<script id="fx_common_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+							uniform sampler2D uSrc;
+							uniform vec2 uDelta;
+
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+
+							void main(void) {
+								gl_FragColor = texture2D(uSrc, texCoord);
+							}
+							</script>
+							<!-- post processing -->
+							<script id="pp_final_vsh" type="x-shader/x_vertex">
+							uniform vec3 uResolution;
+							attribute vec2 aPosition;
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+							void main(void) {
+								gl_Position = vec4(aPosition, 0.0, 1.0);
+								texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+								screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+							}
+							</script>
+							<script id="pp_final_fsh" type="x-shader/x_fragment">
+							#ifdef GL_ES
+							//precision mediump float;
+							precision highp float;
+							#endif
+							uniform sampler2D uSrc;
+							uniform sampler2D uBloom;
+							uniform vec2 uDelta;
+							varying vec2 texCoord;
+							varying vec2 screenCoord;
+							void main(void) {
+								vec4 srccol = texture2D(uSrc, texCoord) * 2.0;
+								vec4 bloomcol = texture2D(uBloom, texCoord);
+								vec4 col;
+								col = srccol + bloomcol * (vec4(1.0) + srccol);
+								col *= smoothstep(1.0, 0.0, pow(length((texCoord - vec2(0.5)) * 2.0), 1.2) * 0.5);
+								col = pow(col, vec4(0.45454545454545)); //(1.0 / 2.2)
+								
+								gl_FragColor = vec4(col.rgb, 1.0);
+								gl_FragColor.a = 1.0;
+							}
+							</script>
+
+						<!-- Three -->
+							<section id="three">
+								<div class="container">
+									<h3>部分项目展示</h3>
+									<p></p>
+									<div class="features">
+										<article>
+											<a href="#" class="image"><img src="images/pic01.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>升鲜宝供应链管理系统（管理后台）</h4>
+												<p>
+													Java后端（Spring、SpringMVC、Mybatis、SpringBoot）<br/>
+													Vue前端（elelment-UI）<br/>
+													Mysql数据库
+												</p>
+											</div>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic01.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>升鲜宝公司官网（企业服务官网）</h4>
+												<p>
+													Java后端（Spring、SpringMVC、Mybatis、SpringBoot）<br/>
+													前端（HTML、CSS、Javascript）<br/>
+													Mysql数据库
+												</p>
+											</div>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic02.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>亿盛B端订货小程序（微信小程序）</h4>
+												<p>
+													根据原型图实现小程序功能。<br/>
+													相关技术：JavaScript、CSS等
+												</p>
+											</div>
+										</article>
+										<article>
+											<a href="#" class="image">
+												<img src="images/pic03.jpg" alt="" />
+												<!-- <canvas id="sakura" style="width: 100vw;height: 10vw;"></canvas> -->
+											</a>
+											<div class="inner">
+												<h4>时间管理工具（微信小程序）</h4>
+												<p>
+													记录自己日常在工作、学习、娱乐上花费的时间<br/>
+													并按时间段进行汇总。
+												</p>
+											</div>
+										</article>
+										<!-- <article>
+											<a href="#" class="image">
+												<canvas id="sakura" style="width: 100vw;height: 10vw;"></canvas>
+											</a>
+											<div class="inner">
+												<h4>樱花飘落</h4>
+												<p>
+													<br/>
+													
+												</p>
+											</div>
+										</article> -->
+									</div>
+								</div>
+							</section>
+
+						<!-- Four -->
+							<section id="four">
+								<div class="container">
+									<h3>联系方式</h3>
+									<p>如果对我感兴趣，欢迎使用下列联系方式</p>
+									<ul class="feature-icons">
+										<li class="icon solid fa-address-card">violentspoiler@gmail.com</li>
+									</ul>
+									<ul class="feature-icons">
+										<li class="icon solid fa-phone">13114399272</li>
+									</ul>
+								</div>
+							</section>
+
+
+
 					</div>
-				</div>
-			</section>
 
-		<!-- Footer -->
-			<footer id="footer">
-				<!-- <p style="padding-left: 200px;">联系电话： 13114399272</p>
-				<p style="padding-left: 200px;">联系电话： 13114399272</p> -->
-			</footer>
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.poptrox.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
 			<script src="assets/js/browser.min.js"></script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script src="assets/js/data.js"></script>
+			<!-- <script src="assets/js/cavas.js"></script> -->
 
 	</body>
 </html>
