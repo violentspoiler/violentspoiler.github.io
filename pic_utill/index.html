@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>图片目录查看器（GitHub Pages）</title>
+<style>
+html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;}
+#app{display:flex;flex-direction:column;height:100%;}
+#bar{padding:8px;display:flex;gap:8px;flex-wrap:wrap;background:#1e1e1e;}
+#bar select,#bar button{flex:1;min-width:120px;padding:6px 8px;background:#2b2b2b;color:#eee;border:1px solid #444;border-radius:6px;}
+#view{flex:1;overflow:hidden;position:relative;touch-action:none;}
+#img{position:absolute;left:50%;top:50%;transform-origin:0 0;max-width:none;max-height:none;user-select:none;-webkit-user-drag:none;}
+#info{padding:6px 10px;font-size:13px;background:#1e1e1e;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar">
+    <button id="btnPrevFolder">← 目录</button>
+    <select id="selFolder"><option>加载中…</option></select>
+    <button id="btnNextFolder">目录 →</button>
+  </div>
+  <div id="view"><img id="img" /></div>
+  <div id="info">正在加载列表…</div>
+</div>
+
+<script>
+const selFolder = document.getElementById('selFolder');
+const btnPrevFolder = document.getElementById('btnPrevFolder');
+const btnNextFolder = document.getElementById('btnNextFolder');
+const view = document.getElementById('view');
+const img = document.getElementById('img');
+const info = document.getElementById('info');
+
+let folders = {};   // { "A/B": [relPath, ...] }
+let keys = [];
+let curKey = '';
+let curIndex = 0;
+
+let scale=1, tx=0, ty=0;
+let dragging=false, sx=0, sy=0, bx=0, by=0;
+
+function apply(){ img.style.transform=`translate(${tx}px,${ty}px) translate(-50%,-50%) scale(${scale})`; }
+function reset(){ scale=1; tx=0; ty=0; apply(); }
+
+function show(){
+  const list = folders[curKey];
+  if(!list||!list.length){ img.src=''; info.textContent=curKey+': 空'; return; }
+  const file = list[curIndex];
+  img.src='./images/' + file;
+  info.textContent = curKey + '  ' + (curIndex+1) + '/' + list.length + '  ' + file.split('/').pop();
+  reset();
+}
+
+function switchFolder(offset){
+  const i = keys.indexOf(curKey);
+  curKey = keys[(i+offset+keys.length)%keys.length];
+  curIndex=0; selFolder.value=curKey; show();
+}
+
+selFolder.onchange = () => { curKey=selFolder.value; curIndex=0; show(); };
+btnPrevFolder.onclick = () => switchFolder(-1);
+btnNextFolder.onclick = () => switchFolder(1);
+
+/* 加载 list.json */
+fetch('./list.json')
+  .then(r=>r.json())
+  .then(list=>{
+    folders={}; keys=[];
+    for(const rel of list){
+      const p=rel.split('/');
+      const key=p.length>=3 ? (p[0]+'/'+p[1]) : (p.length===2 ? p[0] : '(根)');
+      (folders[key]=folders[key]||[]).push(rel);
+    }
+    keys=Object.keys(folders).sort();
+    selFolder.innerHTML='';
+    for(const k of keys){
+      const o=document.createElement('option');
+      o.value=k; o.text=k+' ('+folders[k].length+'张)';
+      selFolder.appendChild(o);
+    }
+    curKey=keys[0]; show();
+  });
+
+/* 拖拽 */
+view.addEventListener('pointerdown',e=>{
+  if(e.button!==0) return;
+  dragging=true; sx=e.clientX; sy=e.clientY; bx=tx; by=ty;
+  view.setPointerCapture(e.pointerId);
+});
+view.addEventListener('pointerup',()=>dragging=false);
+view.addEventListener('pointercancel',()=>dragging=false);
+view.addEventListener('pointermove',e=>{ if(!dragging) return; tx=bx+(e.clientX-sx); ty=by+(e.clientY-sy); apply(); });
+
+/* 缩放 */
+view.addEventListener('wheel',e=>{ e.preventDefault(); scale=Math.min(Math.max(scale*(e.deltaY>0?0.92:1.08),0.2),8); apply(); });
+
+/* 左右切换 */
+view.addEventListener('click',e=>{
+  const list=folders[curKey]; if(!list||list.length<=1) return;
+  if(e.clientX<innerWidth/2) curIndex=(curIndex-1+list.length)%list.length;
+  else curIndex=(curIndex+1)%list.length;
+  show();
+});
+</script>
+</body>
+</html>

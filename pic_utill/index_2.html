@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>文件夹图片查看器</title>
+<style>
+html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;}
+#app{display:flex;flex-direction:column;height:100%;}
+#toolbar{padding:8px;display:flex;gap:8px;flex-wrap:wrap;background:#1e1e1e;}
+#toolbar select,#toolbar button{flex:1;min-width:120px;padding:6px 8px;background:#2b2b2b;color:#eee;border:1px solid #444;border-radius:6px;}
+#viewer{flex:1;overflow:hidden;position:relative;touch-action:none;}
+#img{
+  position:absolute;
+  left:50%;top:50%;
+  transform-origin:0 0;
+  max-width:none;max-height:none;
+  user-select:none;-webkit-user-drag:none;
+}
+#info{padding:6px 10px;font-size:13px;background:#1e1e1e;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar">
+    <button id="pick">选择总目录</button>
+    <select id="folderSel"><option>请先选择总目录</option></select>
+  </div>
+  <div id="viewer"><img id="img" /></div>
+  <div id="info">就绪</div>
+</div>
+
+<input type="file" id="dirInput" webkitdirectory multiple accept="image/*" style="display:none" />
+
+<script>
+const dirInput = document.getElementById('dirInput');
+const pickBtn = document.getElementById('pick');
+const folderSel = document.getElementById('folderSel');
+const viewer = document.getElementById('viewer');
+const img = document.getElementById('img');
+const info = document.getElementById('info');
+
+let folders = {}; // { 一级目录名: [File] }
+let curFolder = '';
+let curIndex = 0;
+
+let scale = 1, tx = 0, ty = 0;
+let dragging = false, startX = 0, startY = 0, baseTx = 0, baseTy = 0;
+
+function apply() {
+  img.style.transform = `translate(${tx}px,${ty}px) translate(-50%,-50%) scale(${scale})`;
+}
+
+function resetTransform() { scale = 1; tx = 0; ty = 0; apply(); }
+
+function showCurrent() {
+  const list = folders[curFolder];
+  if (!list || !list.length) { img.src = ''; info.textContent = curFolder + '：空'; return; }
+  const file = list[curIndex];
+  img.src = URL.createObjectURL(file);
+  info.textContent = `${curFolder}  ${curIndex+1}/${list.length}  ${file.name}`;
+  resetTransform();
+}
+
+folderSel.onchange = () => {
+  curFolder = folderSel.value;
+  curIndex = 0;
+  showCurrent();
+};
+
+pickBtn.onclick = () => dirInput.click();
+
+dirInput.onchange = (e) => {
+  const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+  folders = {};
+
+  for (const f of files) {
+    const rp = f.webkitRelativePath || f.name;
+    const parts = rp.split('/'); 
+    // 至少两级才按二级目录分组：A/B，否则归到(根)或一级目录
+    const key = parts.length >= 3 ? (parts[0] + '/' + parts[1]) : (parts.length === 2 ? parts[0] : '(根)');
+    (folders[key] = folders[key] || []).push(f);
+  }
+
+  folderSel.innerHTML = '';
+  const keys = Object.keys(folders);
+  if (!keys.length) return;
+
+  keys.sort();
+  for (const k of keys) {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.text = k + ` (${folders[k].length}张)`;
+    folderSel.appendChild(opt);
+  }
+
+  curFolder = keys[0];
+  curIndex = 0;
+  showCurrent();
+};
+
+/* 拖拽（只在按住时生效，避免“随鼠标乱动”） */
+viewer.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  dragging = true;
+  startX = e.clientX; startY = e.clientY;
+  baseTx = tx; baseTy = ty;
+  viewer.setPointerCapture(e.pointerId);
+});
+viewer.addEventListener('pointerup', () => dragging = false);
+viewer.addEventListener('pointercancel', () => dragging = false);
+viewer.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  tx = baseTx + (e.clientX - startX);
+  ty = baseTy + (e.clientY - startY);
+  apply();
+});
+
+/* 滚轮缩放 */
+viewer.addEventListener('wheel', e => {
+  e.preventDefault();
+  scale = Math.min(Math.max(scale * (e.deltaY > 0 ? 0.92 : 1.08), 0.2), 8);
+  apply();
+});
+
+/* 左右点击切换 */
+viewer.addEventListener('click', e => {
+  const list = folders[curFolder];
+  if (!list || list.length <= 1) return;
+  if (e.clientX < innerWidth / 2) curIndex = (curIndex - 1 + list.length) % list.length;
+  else curIndex = (curIndex + 1) % list.length;
+  showCurrent();
+});
+</script>
+</body>
+</html>
