@@ -136,7 +136,23 @@ view.addEventListener('pointercancel',()=>dragging=false);
 view.addEventListener('pointermove',e=>{ if(!dragging) return; tx=bx+(e.clientX-sx); ty=by+(e.clientY-sy); apply(); });
 
 /* 缩放 */
-view.addEventListener('wheel',e=>{ e.preventDefault(); scale=Math.min(Math.max(scale*(e.deltaY>0?0.92:1.08),0.2),8); apply(); });
+viewer.addEventListener('wheel', e => {
+  e.preventDefault();
+
+  const rect = img.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const oldScale = scale;
+  const delta = e.deltaY > 0 ? 0.92 : 1.08;
+  scale = Math.min(Math.max(scale * delta, 0.2), 8);
+
+  // ✅ 关键：让鼠标指向的点不动
+  tx = tx + (mx - rect.width  / 2) * (1 - scale / oldScale);
+  ty = ty + (my - rect.height / 2) * (1 - scale / oldScale);
+
+  apply();
+});
 
 /* 左右切换 */
 view.addEventListener('click',e=>{
