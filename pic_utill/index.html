@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <title>图片目录查看器</title>
 
+<!-- ✅ 防 favicon 404 -->
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
 <style>
 html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;}
 #app{display:flex;flex-direction:column;height:100%;}
@@ -55,14 +58,22 @@ html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-sys
 </div>
 
 <script>
-/***********************
- * 基础路径
- ***********************/
-//const BASE_PATH = location.pathname.replace(/\/$/, '');
-const BASE_PATH = location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
-/***********************
- * DOM 引用
- ***********************/
+/****************************
+ * ✅ 防呆路径处理（最重要）
+ ****************************/
+const BASE_PATH = (() => {
+  const p = location.pathname;
+  // 去掉 /index.html
+  return p.replace(/\/index\.html$/, '').replace(/\/$/, '');
+})();
+
+function asset(path) {
+  return BASE_PATH + path;
+}
+
+/****************************
+ * DOM 引用（统一入口）
+ ****************************/
 const dom = {
   view: document.getElementById('view'),
   img: document.getElementById('img'),
@@ -73,11 +84,11 @@ const dom = {
   thumbList: document.getElementById('thumbList')
 };
 
-/***********************
+/****************************
  * 状态管理
- ***********************/
+ ****************************/
 const state = {
-  folders: {},        // { folderKey: [relPath] }
+  folders: {},
   folderKeys: [],
   curFolder: '',
   curIndex: 0,
@@ -93,9 +104,9 @@ const state = {
   baseTy: 0
 };
 
-/***********************
- * Transform 工具
- ***********************/
+/****************************
+ * Transform
+ ****************************/
 function applyTransform() {
   dom.img.style.transform =
     `translate(-50%,-50%) translate(${state.tx}px,${state.ty}px) scale(${state.scale})`;
@@ -118,9 +129,9 @@ function resetTransform() {
   applyTransform();
 }
 
-/***********************
- * 图片渲染
- ***********************/
+/****************************
+ * 渲染
+ ****************************/
 function showCurrent() {
   const list = state.folders[state.curFolder];
   if (!list?.length) {
@@ -132,16 +143,16 @@ function showCurrent() {
   const rel = list[state.curIndex];
   dom.img.onload = resetTransform;
 
-  dom.img.src = BASE_PATH + '/images/' + rel;
+  dom.img.src = asset('/images/' + rel);
   dom.info.textContent =
     `${state.curFolder} ${state.curIndex + 1}/${list.length} ${rel.split('/').pop()}`;
 
   updateThumbActive();
 }
 
-/***********************
- * 目录切换
- ***********************/
+/****************************
+ * 目录
+ ****************************/
 function switchFolder(offset) {
   const i = state.folderKeys.indexOf(state.curFolder);
   state.curFolder =
@@ -160,15 +171,15 @@ dom.selFolder.onchange = () => {
 dom.btnPrevFolder.onclick = () => switchFolder(-1);
 dom.btnNextFolder.onclick = () => switchFolder(1);
 
-/***********************
+/****************************
  * 缩略图
- ***********************/
+ ****************************/
 function renderThumbs(list) {
   dom.thumbList.innerHTML = '';
   list.forEach((rel, i) => {
     const img = document.createElement('img');
     img.className = 'thumb';
-    img.src = BASE_PATH + '/images/' + rel;
+    img.src = asset('/images/' + rel);
     img.dataset.index = i;
     img.onclick = () => {
       state.curIndex = i;
@@ -186,9 +197,9 @@ function updateThumbActive() {
   active?.scrollIntoView({ inline: 'center', block: 'nearest' });
 }
 
-/***********************
- * 交互：拖拽
- ***********************/
+/****************************
+ * 拖拽
+ ****************************/
 dom.view.addEventListener('pointerdown', e => {
   if (e.button !== 0) return;
   state.dragging = true;
@@ -208,9 +219,9 @@ dom.view.addEventListener('pointermove', e => {
   applyTransform();
 });
 
-/***********************
- * 交互：缩放（鼠标中心）
- ***********************/
+/****************************
+ * 缩放（鼠标中心）
+ ****************************/
 dom.view.addEventListener('wheel', e => {
   e.preventDefault();
 
@@ -228,9 +239,9 @@ dom.view.addEventListener('wheel', e => {
   applyTransform();
 });
 
-/***********************
+/****************************
  * 左右切换
- ***********************/
+ ****************************/
 dom.view.addEventListener('click', e => {
   const list = state.folders[state.curFolder];
   if (!list || list.length <= 1) return;
@@ -243,26 +254,15 @@ dom.view.addEventListener('click', e => {
   showCurrent();
 });
 
-/***********************
- * 启动入口
- ***********************/
-
-fetch(BASE_PATH + '/list.json')
+/****************************
+ * ✅ 启动入口（唯一 fetch）
+ ****************************/
+fetch(asset('/list.json'))
   .then(res => {
     if (!res.ok) throw new Error('list.json not found');
     return res.json();
   })
   .then(list => {
-    console.log('✅ loaded list:', list);
-  })
-  .catch(err => {
-    console.error(err);
-  });
-
-fetch(BASE_PATH + '/list.json')
-  .then(r => r.json())
-  .then(list => {
-    // 按二级目录分组
     const folders = {};
     for (const rel of list) {
       const p = rel.split('/');
@@ -284,6 +284,10 @@ fetch(BASE_PATH + '/list.json')
 
     renderThumbs(list);
     showCurrent();
+  })
+  .catch(err => {
+    dom.info.textContent = '加载失败：' + err.message;
+    console.error(err);
   });
 </script>
 </body>
