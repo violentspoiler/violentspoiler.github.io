@@ -24,6 +24,35 @@ html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-sys
   user-select: none;
   -webkit-user-drag: none;
 }
+#thumbnails {
+  height: 96px;
+  background: #1a1a1a;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 50%;
+  box-sizing: border-box;
+}
+
+#thumbList {
+  display: flex;
+  gap: 8px;
+}
+
+.thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.thumb.active {
+  border-color: #2f7edc; /* ✅ 蓝色高亮 */
+}
 #info{padding:6px 10px;font-size:13px;background:#1e1e1e;}
 </style>
 </head>
@@ -37,7 +66,9 @@ html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-sys
   <div id="view"><img id="img" /></div>
   <div id="info">正在加载列表…</div>
 </div>
-
+<div id="thumbnails">
+  <div id="thumbList"></div>
+</div>
 <script>
 const selFolder = document.getElementById('selFolder');
 const btnPrevFolder = document.getElementById('btnPrevFolder');
@@ -123,8 +154,41 @@ fetch('./list.json')
       selFolder.appendChild(o);
     }
     curKey=keys[0]; show();
+    renderThumbs(list);
+  });
+const thumbList = document.getElementById('thumbList');
+
+function renderThumbs(list) {
+  thumbList.innerHTML = '';
+  list.forEach((rel, i) => {
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.src = BASE_PATH + '/images/' + rel;
+    img.dataset.index = i;
+
+    img.onclick = () => {
+      curIndex = i;
+      showCurrent();
+      updateThumbActive();
+    };
+
+    thumbList.appendChild(img);
+  });
+}
+function updateThumbActive() {
+  document.querySelectorAll('.thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === curIndex);
   });
 
+  const active = document.querySelector('.thumb.active');
+  if (active) {
+    active.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    });
+  }
+}
 /* 拖拽 */
 view.addEventListener('pointerdown',e=>{
   if(e.button!==0) return;
