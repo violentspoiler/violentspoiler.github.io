@@ -3,59 +3,41 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>图片目录查看器（GitHub Pages）</title>
+<title>图片目录查看器</title>
+
 <style>
 html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;}
 #app{display:flex;flex-direction:column;height:100%;}
+
 #bar{padding:8px;display:flex;gap:8px;flex-wrap:wrap;background:#1e1e1e;}
 #bar select,#bar button{flex:1;min-width:120px;padding:6px 8px;background:#2b2b2b;color:#eee;border:1px solid #444;border-radius:6px;}
+
 #view{flex:1;overflow:hidden;position:relative;touch-action:none;}
-#img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  max-width: 100vw;
-  max-height: 100vh;
-
-  transform: translate(-50%, -50%); /* ✅ 只负责居中 */
-  transform-origin: center center;
-
-  user-select: none;
-  -webkit-user-drag: none;
-}
-#thumbnails {
-  height: 96px;
-  background: #1a1a1a;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  align-items: center;
-  padding: 0 50%;
-  box-sizing: border-box;
+#img{
+  position:absolute;left:50%;top:50%;
+  max-width:100vw;max-height:100vh;
+  transform:translate(-50%,-50%);
+  transform-origin:center center;
+  user-select:none;-webkit-user-drag:none;
 }
 
-#thumbList {
-  display: flex;
-  gap: 8px;
+#thumbnails{
+  height:96px;background:#1a1a1a;
+  overflow-x:auto;display:flex;align-items:center;
+  padding:0 50%;box-sizing:border-box;
 }
+#thumbList{display:flex;gap:8px;}
+.thumb{
+  width:72px;height:72px;object-fit:cover;
+  border:2px solid transparent;border-radius:6px;
+  cursor:pointer;flex-shrink:0;
+}
+.thumb.active{border-color:#2f7edc;}
 
-.thumb {
-  width: 72px;
-  height: 72px;
-  object-fit: cover;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.thumb.active {
-  border-color: #2f7edc; /* ✅ 蓝色高亮 */
-}
 #info{padding:6px 10px;font-size:13px;background:#1e1e1e;}
 </style>
 </head>
+
 <body>
 <div id="app">
   <div id="bar">
@@ -63,168 +45,233 @@ html,body{height:100%;margin:0;background:#111;color:#eee;font-family:-apple-sys
     <select id="selFolder"><option>加载中…</option></select>
     <button id="btnNextFolder">目录 →</button>
   </div>
+
   <div id="view"><img id="img" /></div>
   <div id="info">正在加载列表…</div>
 </div>
+
 <div id="thumbnails">
   <div id="thumbList"></div>
 </div>
+
 <script>
-const selFolder = document.getElementById('selFolder');
-const btnPrevFolder = document.getElementById('btnPrevFolder');
-const btnNextFolder = document.getElementById('btnNextFolder');
-const view = document.getElementById('view');
-const img = document.getElementById('img');
-const info = document.getElementById('info');
+/***********************
+ * 基础路径
+ ***********************/
+const BASE_PATH = location.pathname.replace(/\/$/, '');
 
-let folders = {};   // { "A/B": [relPath, ...] }
-let keys = [];
-let curKey = '';
-let curIndex = 0;
+/***********************
+ * DOM 引用
+ ***********************/
+const dom = {
+  view: document.getElementById('view'),
+  img: document.getElementById('img'),
+  info: document.getElementById('info'),
+  selFolder: document.getElementById('selFolder'),
+  btnPrevFolder: document.getElementById('btnPrevFolder'),
+  btnNextFolder: document.getElementById('btnNextFolder'),
+  thumbList: document.getElementById('thumbList')
+};
 
-let scale=1, tx=0, ty=0;
-let dragging=false, sx=0, sy=0, bx=0, by=0;
+/***********************
+ * 状态管理
+ ***********************/
+const state = {
+  folders: {},        // { folderKey: [relPath] }
+  folderKeys: [],
+  curFolder: '',
+  curIndex: 0,
 
-function apply(){ img.style.transform=`translate(${tx}px,${ty}px) translate(-50%,-50%) scale(${scale})`; }
-function reset() {
-  scale = 1;
-  tx = 0;
-  ty = 0;
+  scale: 1,
+  tx: 0,
+  ty: 0,
 
-  // 可选：首次自动适应屏幕
-  if (img.naturalWidth && img.naturalHeight) {
-    const sw = window.innerWidth;
-    const sh = window.innerHeight - 60; // 工具栏高度
-    const s = Math.min(
-      sw / img.naturalWidth,
-      sh / img.naturalHeight,
-      1
-    );
-    scale = s;
-  }
+  dragging: false,
+  lastX: 0,
+  lastY: 0,
+  baseTx: 0,
+  baseTy: 0
+};
 
-  apply();
+/***********************
+ * Transform 工具
+ ***********************/
+function applyTransform() {
+  dom.img.style.transform =
+    `translate(-50%,-50%) translate(${state.tx}px,${state.ty}px) scale(${state.scale})`;
 }
 
-function show() {
-  const list = folders[curKey];
-  if (!list || !list.length) {
-    img.src = '';
-    info.textContent = curKey + ': 空';
+function resetTransform() {
+  state.scale = 1;
+  state.tx = 0;
+  state.ty = 0;
+
+  if (dom.img.naturalWidth) {
+    const sw = window.innerWidth;
+    const sh = window.innerHeight - 60;
+    state.scale = Math.min(
+      sw / dom.img.naturalWidth,
+      sh / dom.img.naturalHeight,
+      1
+    );
+  }
+  applyTransform();
+}
+
+/***********************
+ * 图片渲染
+ ***********************/
+function showCurrent() {
+  const list = state.folders[state.curFolder];
+  if (!list?.length) {
+    dom.img.src = '';
+    dom.info.textContent = state.curFolder + '：空';
     return;
   }
 
-  const file = list[curIndex];
-  img.onload = () => {
-    reset(); // ✅ 等图片有自然尺寸后再 reset
-  };
+  const rel = list[state.curIndex];
+  dom.img.onload = resetTransform;
 
-  img.src = './images/' + file;
-  info.textContent =
-    curKey +
-    '  ' + (curIndex + 1) + '/' + list.length +
-    '  ' + file.split('/').pop();
+  dom.img.src = BASE_PATH + '/images/' + rel;
+  dom.info.textContent =
+    `${state.curFolder} ${state.curIndex + 1}/${list.length} ${rel.split('/').pop()}`;
+
+  updateThumbActive();
 }
 
-function switchFolder(offset){
-  const i = keys.indexOf(curKey);
-  curKey = keys[(i+offset+keys.length)%keys.length];
-  curIndex=0; selFolder.value=curKey; show();
+/***********************
+ * 目录切换
+ ***********************/
+function switchFolder(offset) {
+  const i = state.folderKeys.indexOf(state.curFolder);
+  state.curFolder =
+    state.folderKeys[(i + offset + state.folderKeys.length) % state.folderKeys.length];
+  state.curIndex = 0;
+  dom.selFolder.value = state.curFolder;
+  showCurrent();
 }
 
-selFolder.onchange = () => { curKey=selFolder.value; curIndex=0; show(); };
-btnPrevFolder.onclick = () => switchFolder(-1);
-btnNextFolder.onclick = () => switchFolder(1);
+dom.selFolder.onchange = () => {
+  state.curFolder = dom.selFolder.value;
+  state.curIndex = 0;
+  showCurrent();
+};
 
-/* 加载 list.json */
-fetch('./list.json')
-  .then(r=>r.json())
-  .then(list=>{
-    folders={}; keys=[];
-    for(const rel of list){
-      const p=rel.split('/');
-      const key=p.length>=3 ? (p[0]+'/'+p[1]) : (p.length===2 ? p[0] : '(根)');
-      (folders[key]=folders[key]||[]).push(rel);
-    }
-    keys=Object.keys(folders).sort();
-    selFolder.innerHTML='';
-    for(const k of keys){
-      const o=document.createElement('option');
-      o.value=k; o.text=k+' ('+folders[k].length+'张)';
-      selFolder.appendChild(o);
-    }
-    curKey=keys[0]; show();
-    renderThumbs(list);
-  });
-const thumbList = document.getElementById('thumbList');
+dom.btnPrevFolder.onclick = () => switchFolder(-1);
+dom.btnNextFolder.onclick = () => switchFolder(1);
 
+/***********************
+ * 缩略图
+ ***********************/
 function renderThumbs(list) {
-  thumbList.innerHTML = '';
+  dom.thumbList.innerHTML = '';
   list.forEach((rel, i) => {
     const img = document.createElement('img');
     img.className = 'thumb';
     img.src = BASE_PATH + '/images/' + rel;
     img.dataset.index = i;
-
     img.onclick = () => {
-      curIndex = i;
+      state.curIndex = i;
       showCurrent();
-      updateThumbActive();
     };
-
-    thumbList.appendChild(img);
+    dom.thumbList.appendChild(img);
   });
 }
+
 function updateThumbActive() {
   document.querySelectorAll('.thumb').forEach((t, i) => {
-    t.classList.toggle('active', i === curIndex);
+    t.classList.toggle('active', i === state.curIndex);
   });
-
   const active = document.querySelector('.thumb.active');
-  if (active) {
-    active.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest'
-    });
-  }
+  active?.scrollIntoView({ inline: 'center', block: 'nearest' });
 }
-/* 拖拽 */
-view.addEventListener('pointerdown',e=>{
-  if(e.button!==0) return;
-  dragging=true; sx=e.clientX; sy=e.clientY; bx=tx; by=ty;
-  view.setPointerCapture(e.pointerId);
-});
-view.addEventListener('pointerup',()=>dragging=false);
-view.addEventListener('pointercancel',()=>dragging=false);
-view.addEventListener('pointermove',e=>{ if(!dragging) return; tx=bx+(e.clientX-sx); ty=by+(e.clientY-sy); apply(); });
 
-/* 缩放 */
-viewer.addEventListener('wheel', e => {
+/***********************
+ * 交互：拖拽
+ ***********************/
+dom.view.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  state.dragging = true;
+  state.lastX = e.clientX;
+  state.lastY = e.clientY;
+  state.baseTx = state.tx;
+  state.baseTy = state.ty;
+});
+
+dom.view.addEventListener('pointerup', () => state.dragging = false);
+dom.view.addEventListener('pointercancel', () => state.dragging = false);
+
+dom.view.addEventListener('pointermove', e => {
+  if (!state.dragging) return;
+  state.tx = state.baseTx + (e.clientX - state.lastX);
+  state.ty = state.baseTy + (e.clientY - state.lastY);
+  applyTransform();
+});
+
+/***********************
+ * 交互：缩放（鼠标中心）
+ ***********************/
+dom.view.addEventListener('wheel', e => {
   e.preventDefault();
 
-  const rect = img.getBoundingClientRect();
+  const rect = dom.img.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
 
-  const oldScale = scale;
+  const oldScale = state.scale;
   const delta = e.deltaY > 0 ? 0.92 : 1.08;
-  scale = Math.min(Math.max(scale * delta, 0.2), 8);
+  state.scale = Math.min(Math.max(state.scale * delta, 0.2), 8);
 
-  // ✅ 关键：让鼠标指向的点不动
-  tx = tx + (mx - rect.width  / 2) * (1 - scale / oldScale);
-  ty = ty + (my - rect.height / 2) * (1 - scale / oldScale);
+  state.tx += (mx - rect.width  / 2) * (1 - state.scale / oldScale);
+  state.ty += (my - rect.height / 2) * (1 - state.scale / oldScale);
 
-  apply();
+  applyTransform();
 });
 
-/* 左右切换 */
-view.addEventListener('click',e=>{
-  const list=folders[curKey]; if(!list||list.length<=1) return;
-  if(e.clientX<innerWidth/2) curIndex=(curIndex-1+list.length)%list.length;
-  else curIndex=(curIndex+1)%list.length;
-  show();
+/***********************
+ * 左右切换
+ ***********************/
+dom.view.addEventListener('click', e => {
+  const list = state.folders[state.curFolder];
+  if (!list || list.length <= 1) return;
+
+  if (e.clientX < innerWidth / 2)
+    state.curIndex = (state.curIndex - 1 + list.length) % list.length;
+  else
+    state.curIndex = (state.curIndex + 1) % list.length;
+
+  showCurrent();
 });
+
+/***********************
+ * 启动入口
+ ***********************/
+fetch(BASE_PATH + '/list.json')
+  .then(r => r.json())
+  .then(list => {
+    // 按二级目录分组
+    const folders = {};
+    for (const rel of list) {
+      const p = rel.split('/');
+      const key = p.length >= 3 ? `${p[0]}/${p[1]}` : (p.length === 2 ? p[0] : '(根)');
+      (folders[key] = folders[key] || []).push(rel);
+    }
+
+    state.folders = folders;
+    state.folderKeys = Object.keys(folders).sort();
+    state.curFolder = state.folderKeys[0];
+
+    dom.selFolder.innerHTML = '';
+    for (const k of state.folderKeys) {
+      const o = document.createElement('option');
+      o.value = k;
+      o.text = `${k} (${folders[k].length})`;
+      dom.selFolder.appendChild(o);
+    }
+
+    renderThumbs(list);
+    showCurrent();
+  });
 </script>
 </body>
 </html>
