@@ -259,32 +259,32 @@ fetch(BASE_PATH + '/list.json')
     console.error(err);
   });
 
-// fetch(BASE_PATH + '/list.json')
-//   .then(r => r.json())
-//   .then(list => {
-//     // 按二级目录分组
-//     const folders = {};
-//     for (const rel of list) {
-//       const p = rel.split('/');
-//       const key = p.length >= 3 ? `${p[0]}/${p[1]}` : (p.length === 2 ? p[0] : '(根)');
-//       (folders[key] = folders[key] || []).push(rel);
-//     }
+fetch(BASE_PATH + '/list.json')
+  .then(r => r.json())
+  .then(list => {
+    // 按二级目录分组
+    const folders = {};
+    for (const rel of list) {
+      const p = rel.split('/');
+      const key = p.length >= 3 ? `${p[0]}/${p[1]}` : (p.length === 2 ? p[0] : '(根)');
+      (folders[key] = folders[key] || []).push(rel);
+    }
 
-//     state.folders = folders;
-//     state.folderKeys = Object.keys(folders).sort();
-//     state.curFolder = state.folderKeys[0];
+    state.folders = folders;
+    state.folderKeys = Object.keys(folders).sort();
+    state.curFolder = state.folderKeys[0];
 
-//     dom.selFolder.innerHTML = '';
-//     for (const k of state.folderKeys) {
-//       const o = document.createElement('option');
-//       o.value = k;
-//       o.text = `${k} (${folders[k].length})`;
-//       dom.selFolder.appendChild(o);
-//     }
+    dom.selFolder.innerHTML = '';
+    for (const k of state.folderKeys) {
+      const o = document.createElement('option');
+      o.value = k;
+      o.text = `${k} (${folders[k].length})`;
+      dom.selFolder.appendChild(o);
+    }
 
-//     renderThumbs(list);
-//     showCurrent();
-//   });
+    renderThumbs(list);
+    showCurrent();
+  });
 </script>
 </body>
 </html>
