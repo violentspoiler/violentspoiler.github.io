@@ -2,8 +2,8 @@ name: generate-image-list
 on:
   push:
     paths:
-      - 'images/**'
-      - 'scripts/gen-list.js'
+      - 'pic_utill/images/**'
+      - 'pic_utill/scripts/gen-list.js'
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node scripts/gen-list.js
+      - run: node pic_utill/scripts/gen-list.js
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
