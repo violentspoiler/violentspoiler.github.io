@@ -140,15 +140,14 @@ function showCurrent() {
     return;
   }
 
-  const rel = list[state.curIndex];
-
-  // ✅ 只在第一次加载时重置
-  if (!dom.img.src || dom.img.src === '') {
-    dom.img.onload = resetTransform;
-  } else {
-    dom.img.onload = null;
+  // ✅ 防止越界
+  if (state.curIndex < 0 || state.curIndex >= list.length) {
+    state.curIndex = 0;
   }
 
+  const rel = list[state.curIndex];
+
+  dom.img.onload = null; // ✅ 不再强制 reset
   dom.img.src = asset('/images/' + rel);
 
   dom.info.textContent =
@@ -156,6 +155,30 @@ function showCurrent() {
 
   updateThumbActive();
 }
+// function showCurrent() {
+//   const list = state.folders[state.curFolder];
+//   if (!list?.length) {
+//     dom.img.src = '';
+//     dom.info.textContent = state.curFolder + '：空';
+//     return;
+//   }
+
+//   const rel = list[state.curIndex];
+
+//   // ✅ 只在第一次加载时重置
+//   if (!dom.img.src || dom.img.src === '') {
+//     dom.img.onload = resetTransform;
+//   } else {
+//     dom.img.onload = null;
+//   }
+
+//   dom.img.src = asset('/images/' + rel);
+
+//   dom.info.textContent =
+//     `${state.curFolder} ${state.curIndex + 1}/${list.length} ${rel.split('/').pop()}`;
+
+//   updateThumbActive();
+// }
 // function showCurrent() {
 //   const list = state.folders[state.curFolder];
 //   if (!list?.length) {
