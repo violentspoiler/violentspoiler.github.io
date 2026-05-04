@@ -141,14 +141,38 @@ function showCurrent() {
   }
 
   const rel = list[state.curIndex];
-  dom.img.onload = resetTransform;
+
+  // ✅ 只在第一次加载时重置
+  if (!dom.img.src || dom.img.src === '') {
+    dom.img.onload = resetTransform;
+  } else {
+    dom.img.onload = null;
+  }
 
   dom.img.src = asset('/images/' + rel);
+
   dom.info.textContent =
     `${state.curFolder} ${state.curIndex + 1}/${list.length} ${rel.split('/').pop()}`;
 
   updateThumbActive();
 }
+// function showCurrent() {
+//   const list = state.folders[state.curFolder];
+//   if (!list?.length) {
+//     dom.img.src = '';
+//     dom.info.textContent = state.curFolder + '：空';
+//     return;
+//   }
+
+//   const rel = list[state.curIndex];
+//   dom.img.onload = resetTransform;
+
+//   dom.img.src = asset('/images/' + rel);
+//   dom.info.textContent =
+//     `${state.curFolder} ${state.curIndex + 1}/${list.length} ${rel.split('/').pop()}`;
+
+//   updateThumbActive();
+// }
 
 /****************************
  * 目录
