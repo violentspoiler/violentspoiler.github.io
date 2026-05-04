@@ -117,15 +117,15 @@ function resetTransform() {
   state.tx = 0;
   state.ty = 0;
 
-  if (dom.img.naturalWidth) {
-    const sw = window.innerWidth;
-    const sh = window.innerHeight - 60;
-    state.scale = Math.min(
-      sw / dom.img.naturalWidth,
-      sh / dom.img.naturalHeight,
-      1
-    );
-  }
+  // if (dom.img.naturalWidth) {
+  //   const sw = window.innerWidth;
+  //   const sh = window.innerHeight - 60;
+  //   state.scale = Math.min(
+  //     sw / dom.img.naturalWidth,
+  //     sh / dom.img.naturalHeight,
+  //     1
+  //   );
+  // }
   applyTransform();
 }
 
